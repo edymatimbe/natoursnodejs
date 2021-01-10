@@ -33,7 +33,7 @@ exports.signIn = catchAsync (async (req, res, next) => {
 
     // 1) Check if email and password exist
     if(!email || !password) {
-        return next( new AppError('Please provide email and password!', 400));
+        return next( new AppError('Please provide your email and password!!!', 400));
     }
     // 2) Check if user exists && password
     const user = await User.findOne({email}).select('+password');
@@ -47,6 +47,6 @@ exports.signIn = catchAsync (async (req, res, next) => {
     const token = signToken(user._id);
     res.status(200).json({
         status: 'success',
-        token
+        token 
     });
 });

@@ -64,10 +64,16 @@ exports.protectRoutes = catchAsync(async(req, res, next) => {
         return next(new AppError('You\'re not logged in, please signin', 401))
     }
     // 2 - Verification token
-
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+   
     // 3 - CHeck if user still exists
-
+    const freshUser = await User.findById(decoded.id);
+    if(!freshUser) {
+        return next (new AppError('The token don\'t belongs to user, user no longer exist', 401));
+    }
     // Check if user changes password after jwt was issued
+    freshUser.changedPasswordAfter(decoded.iat);
 
+    
     next();
 })
